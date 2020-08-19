@@ -1,25 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_pos/backend/handlers/category.dart';
-import 'package:flutter_pos/backend/handlers/item.dart';
-import 'package:flutter_pos/backend/session.dart';
-import 'package:flutter_pos/backend/user.dart';
+import 'package:flutter_pos/backend/category.dart';
 import 'package:flutter_pos/routes/receipts.dart';
 import 'package:flutter_pos/routes/sales.dart';
 
-void main() {
-
-  Session.user = User();
-  Session.categoryHandler = CategoryHandler();
-  Session.categoryHandler.loadFromDB();
-
-  Session.itemHandler = ItemHandler();
-  Session.itemHandler.loadFromDB();
+void main() async {
   runApp(
     POSApplication(),
   );
 }
 
 class POSApplication extends StatefulWidget {
+  static const USE_DATABASE = false;
+
   @override
   _POSApplicationState createState() => _POSApplicationState();
 }
