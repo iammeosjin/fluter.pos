@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_pos/reusable-ui/main-drawer.dart';
 
 class ReceiptsPage extends StatelessWidget {
+  static const ROUTE = '/receipt';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -3,7 +3,7 @@ import 'package:sqflite/sqflite.dart';
 
 class Item {
   static const SOLD_BY_EACH = 'each';
-  static const SOLD_BY_HEIGHT = 'weight';
+  static const SOLD_BY_WEIGHT = 'weight';
   static const TABLE = 'items';
   static const NAME = 'name';
   static const IMAGE = 'image';

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_pos/backend/category.dart';
+import 'package:flutter_pos/routes/inventory.dart';
 import 'package:flutter_pos/routes/receipts.dart';
 import 'package:flutter_pos/routes/sales.dart';
 
@@ -22,8 +23,9 @@ class _POSApplicationState extends State<POSApplication> {
     return MaterialApp(
       initialRoute: '/sales',
       routes: {
-        '/sales': (context) => SalesPage(),
-        '/receipts': (context) => ReceiptsPage(),
+        SalesPage.ROUTE: (context) => SalesPage(),
+        ReceiptsPage.ROUTE: (context) => ReceiptsPage(),
+        InventoryPage.ROUTE: (context) => InventoryPage(),
       },
     );
   }
