@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pos/backend/item.dart';
 
@@ -7,15 +8,14 @@ class CreateItemPage extends StatefulWidget {
 }
 
 class _CreateItemPageState extends State<CreateItemPage> {
-
   String _name;
   String _category;
-  String _soldBy;
+  String _soldBy = Item.SOLD_BY_EACH;
   String _image;
   double _price;
   double _cost;
   int _sku;
-  bool _trackStock;
+  bool _trackStock = false;
   int _stocks;
 
   final GlobalKey<FormState> _formKeys = GlobalKey<FormState>();
@@ -24,14 +24,12 @@ class _CreateItemPageState extends State<CreateItemPage> {
     return TextFormField(
       decoration: InputDecoration(labelText: 'Name'),
       validator: (String value) {
-        if (value.isEmpty){
-
+        if (value.isEmpty) {
           return 'Name is required';
         }
 
         return null;
       },
-      autovalidate: true,
       autocorrect: false,
       autofocus: false,
       onSaved: (String value) {
@@ -44,8 +42,7 @@ class _CreateItemPageState extends State<CreateItemPage> {
     return TextFormField(
       decoration: InputDecoration(labelText: 'Name'),
       validator: (String value) {
-        if (value.isEmpty){
-
+        if (value.isEmpty) {
           return 'Name is required';
         }
 
@@ -61,37 +58,57 @@ class _CreateItemPageState extends State<CreateItemPage> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
           Text('Sold By'),
-          Row(
-            children: <Widget>[
-              Radio(
-                value: Item.SOLD_BY_EACH,
-                groupValue: _soldBy,
-                onChanged: (String value) {
-                  setState(() {
-                    _soldBy = value;
-                  });
-                },
+          Container(
+            height: 30,
+            child: InkWell(
+              onTap: () {
+                setState(() {
+                  _soldBy = Item.SOLD_BY_EACH;
+                });
+              },
+              child: Row(
+                children: <Widget>[
+                  Radio(
+                    value: Item.SOLD_BY_EACH,
+                    groupValue: _soldBy,
+                    onChanged: (String value) {
+                      setState(() {
+                        _soldBy = value;
+                      });
+                    },
+                  ),
+                  Flexible(
+                    child: Text('Each'),
+                  ),
+                ],
               ),
-              Flexible(
-                child: Text('Each'),
-              ),
-            ],
+            ),
           ),
-          Row(
-            children: <Widget>[
-              Radio(
-                value: Item.SOLD_BY_WEIGHT,
-                groupValue: _soldBy,
-                onChanged: (String value) {
-                  setState(() {
-                    _soldBy = value;
-                  });
-                },
+          Container(
+            height: 30,
+            child: InkWell(
+              onTap: () {
+                setState(() {
+                  _soldBy = Item.SOLD_BY_WEIGHT;
+                });
+              },
+              child: Row(
+                children: <Widget>[
+                  Radio(
+                    value: Item.SOLD_BY_WEIGHT,
+                    groupValue: _soldBy,
+                    onChanged: (String value) {
+                      setState(() {
+                        _soldBy = value;
+                      });
+                    },
+                  ),
+                  Flexible(
+                    child: Text('Weight'),
+                  ),
+                ],
               ),
-              Flexible(
-                child: Text('Weight'),
-              ),
-            ],
+            ),
           ),
         ],
       ),
@@ -104,16 +121,15 @@ class _CreateItemPageState extends State<CreateItemPage> {
 
   Widget _buildPriceField() {
     return TextFormField(
-      autovalidate: true,
       decoration: InputDecoration(labelText: 'Price', helperText: '(Optional)'),
       keyboardType: TextInputType.number,
       validator: (String value) {
-        if (value.isEmpty){
+        if (value.isEmpty) {
           return null;
         }
 
         double price = double.tryParse(value);
-        if (price == null  || price < 0) {
+        if (price == null || price < 0) {
           return 'Price must be greater than 0';
         }
 
@@ -127,12 +143,11 @@ class _CreateItemPageState extends State<CreateItemPage> {
 
   Widget _buildCostField() {
     return TextFormField(
-      autovalidate: true,
       decoration: InputDecoration(labelText: 'Cost'),
       keyboardType: TextInputType.number,
       validator: (String value) {
         double cost = double.tryParse(value);
-        if (cost == null  || cost <= 0) {
+        if (cost == null || cost <= 0) {
           return 'Cost is required and must be greater than 0';
         }
 
@@ -146,8 +161,7 @@ class _CreateItemPageState extends State<CreateItemPage> {
 
   Widget _buildSKUField() {
     return TextFormField(
-      autovalidate: true,
-      decoration: InputDecoration(labelText: 'Cost'),
+      decoration: InputDecoration(labelText: 'SKU'),
       keyboardType: TextInputType.number,
       validator: (String value) {
         int _sku = int.tryParse(value);
@@ -164,22 +178,60 @@ class _CreateItemPageState extends State<CreateItemPage> {
   }
 
   Widget _buildTrackStockField() {
-    return null;
+    return Container(
+      child: Row(
+        children: <Widget>[
+          Expanded(
+            flex: 8,
+            child: Text('Track Stocks'),
+          ),
+          Flexible(
+            flex: 2,
+            child: Switch(
+              value: _trackStock,
+              onChanged: (value) {
+                setState(() {
+                  _trackStock = value;
+                });
+              },
+              activeTrackColor: Colors.greenAccent,
+              activeColor: Colors.green,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _buildStocksField() {
-    return null;
+    return Visibility(
+      visible: _trackStock,
+      child: TextFormField(
+        decoration: InputDecoration(labelText: 'Stocks'),
+        keyboardType: TextInputType.number,
+        validator: (String value) {
+          int stocks = int.tryParse(value);
+          if (stocks == null || stocks <= 0) {
+            return 'Stocks is required and must be greater than 0';
+          }
+
+          return null;
+        },
+        onSaved: (String value) {
+          _stocks = int.tryParse(value);
+        },
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    _trackStock = false;
-    _soldBy = Item.SOLD_BY_EACH;
-
     return Scaffold(
       appBar: AppBar(
         leading: InkWell(
-          onTap: () { Navigator.pop(context); },
+          onTap: () {
+            Navigator.pop(context);
+          },
           child: Icon(Icons.arrow_back),
         ),
         title: Text('Create Item'),
@@ -187,28 +239,58 @@ class _CreateItemPageState extends State<CreateItemPage> {
           IconButton(
             icon: Icon(Icons.save),
             onPressed: () {
+              if (_formKeys.currentState.validate()) {
+                _formKeys.currentState.save();
+                print('$_name $_sku $_trackStock $_soldBy');
+              }
             },
           ),
         ],
       ),
-      body: Container(
-        child: Form(
-          key: _formKeys,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              _buildNameField(),
-              SizedBox(height: 10),
-              _buildSoldByField(),
-              _buildPriceField(),
-              _buildCostField(),
-              _buildSKUField(),
-              /*
+      body: SingleChildScrollView(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(),
+          child: Form(
+            key: _formKeys,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                Card(
+                  child: Container(
+                    padding: EdgeInsets.fromLTRB(10, 15, 10, 10),
+                    child: Column(
+                      children: <Widget>[
+                        _buildNameField(),
+                        SizedBox(height: 10),
+                        _buildSoldByField(),
+                        _buildPriceField(),
+                        _buildCostField(),
+                        _buildSKUField(),
+                        SizedBox(height: 15),
+                      ],
+                    ),
+                  ),
+                ),
+                Card(
+                  child: Container(
+                    padding: EdgeInsets.fromLTRB(10, 15, 10, 10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text('Inventory'),
+                        _buildTrackStockField(),
+                        _buildStocksField(),
+                      ],
+                    ),
+                  ),
+                ),
+                /*
               _buildCategoryField(),
               _buildTrackStockField(),
               _buildStocksField(),
                */
-            ],
+              ],
+            ),
           ),
         ),
       ),
