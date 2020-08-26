@@ -46,7 +46,7 @@ class DatabaseHandler {
       CREATE TABLE IF NOT EXISTS ${Item.TABLE} (
         ${Item.NAME} TEXT NOT NULL,
         ${Item.IMAGE} TEXT,
-        ${Item.CATEGORY} TEXT NOT NULL,
+        ${Item.CATEGORY} TEXT,
         ${Item.SOLD_BY} TEXT DEFAULT "each" NOT NULL,
         ${Item.PRICE} REAL DEFAULT 0.0 NOT NULL,
         ${Item.COST} REAL NOT NULL,

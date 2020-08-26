@@ -9,7 +9,7 @@ class CreateItemPage extends StatefulWidget {
 
 class _CreateItemPageState extends State<CreateItemPage> {
   String _name;
-  String _category;
+  String _category = 'No Category';
   String _soldBy = Item.SOLD_BY_EACH;
   String _image;
   double _price;
@@ -19,6 +19,82 @@ class _CreateItemPageState extends State<CreateItemPage> {
   int _stocks;
 
   final GlobalKey<FormState> _formKeys = GlobalKey<FormState>();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        leading: InkWell(
+          onTap: () {
+            Navigator.pop(context);
+          },
+          child: Icon(Icons.arrow_back),
+        ),
+        title: Text('Create Item'),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.save),
+            onPressed: () {
+              if (_formKeys.currentState.validate()) {
+                _formKeys.currentState.save();
+                String category = _category == 'No Category' ? null : _category;
+                print('$_name $category $_soldBy $_image $_price $_cost $_sku $_trackStock $_stocks');
+              }
+            },
+          ),
+        ],
+      ),
+      body: SingleChildScrollView(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(),
+          child: Form(
+            key: _formKeys,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                Card(
+                  child: Container(
+                    padding: EdgeInsets.fromLTRB(10, 15, 10, 10),
+                    child: Column(
+                      children: <Widget>[
+                        _buildNameField(),
+                        SizedBox(height: 20),
+                        _buildCategoryField(),
+                        SizedBox(height: 20),
+                        _buildSoldByField(),
+                        _buildPriceField(),
+                        _buildCostField(),
+                        _buildSKUField(),
+                        SizedBox(height: 15),
+                      ],
+                    ),
+                  ),
+                ),
+                Card(
+                  child: Container(
+                    padding: EdgeInsets.fromLTRB(10, 15, 10, 10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text('Inventory'),
+                        _buildTrackStockField(),
+                        _buildStocksField(),
+                      ],
+                    ),
+                  ),
+                ),
+                /*
+              _buildCategoryField(),
+              _buildTrackStockField(),
+              _buildStocksField(),
+               */
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 
   Widget _buildNameField() {
     return TextFormField(
@@ -39,15 +115,36 @@ class _CreateItemPageState extends State<CreateItemPage> {
   }
 
   Widget _buildCategoryField() {
-    return TextFormField(
-      decoration: InputDecoration(labelText: 'Name'),
-      validator: (String value) {
-        if (value.isEmpty) {
-          return 'Name is required';
-        }
-
-        return null;
-      },
+    return Container(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Text('Category', style: TextStyle(color: Colors.grey[600]),),
+          DropdownButton(
+            isDense: true,
+            isExpanded: true,
+            value: _category,
+            items: ['No Category', 'Create Category'].map((value) {
+              if (value == 'Create Category') {
+                return DropdownMenuItem(
+                  value: value,
+                  child: InkWell(
+                    child: Text(value),
+                  ),
+                );
+              }
+              return DropdownMenuItem(value: value, child: Text(value));
+            }).toList(),
+            onChanged: (value) {
+              setState(() {
+                if (value != 'Create Category') {
+                  _category = value;
+                }
+              });
+            },
+          )
+        ],
+      ),
     );
   }
 
@@ -192,6 +289,9 @@ class _CreateItemPageState extends State<CreateItemPage> {
               onChanged: (value) {
                 setState(() {
                   _trackStock = value;
+                  if (!value) {
+                    _stocks = 0;
+                  }
                 });
               },
               activeTrackColor: Colors.greenAccent,
@@ -223,77 +323,5 @@ class _CreateItemPageState extends State<CreateItemPage> {
       ),
     );
   }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        leading: InkWell(
-          onTap: () {
-            Navigator.pop(context);
-          },
-          child: Icon(Icons.arrow_back),
-        ),
-        title: Text('Create Item'),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.save),
-            onPressed: () {
-              if (_formKeys.currentState.validate()) {
-                _formKeys.currentState.save();
-                print('$_name $_sku $_trackStock $_soldBy');
-              }
-            },
-          ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        child: ConstrainedBox(
-          constraints: BoxConstraints(),
-          child: Form(
-            key: _formKeys,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                Card(
-                  child: Container(
-                    padding: EdgeInsets.fromLTRB(10, 15, 10, 10),
-                    child: Column(
-                      children: <Widget>[
-                        _buildNameField(),
-                        SizedBox(height: 10),
-                        _buildSoldByField(),
-                        _buildPriceField(),
-                        _buildCostField(),
-                        _buildSKUField(),
-                        SizedBox(height: 15),
-                      ],
-                    ),
-                  ),
-                ),
-                Card(
-                  child: Container(
-                    padding: EdgeInsets.fromLTRB(10, 15, 10, 10),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text('Inventory'),
-                        _buildTrackStockField(),
-                        _buildStocksField(),
-                      ],
-                    ),
-                  ),
-                ),
-                /*
-              _buildCategoryField(),
-              _buildTrackStockField(),
-              _buildStocksField(),
-               */
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
 }
+
